@@ -28,7 +28,8 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
+app.get('/', blog.index);
+app.get("/sample", routes.index);
 app.get('/users', user.list);
 app.get("/blogs", blog.index);
 
