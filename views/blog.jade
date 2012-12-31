@@ -1,20 +1,47 @@
 extends layout
 
 block content
-  .container
-    h1= title
-    table.table.table-striped.table-bordered.table-hover
-      thead
+  
+  h1= title
+
+  #alert-messages
+
+  p
+    a.btn.btn-primary.action-button(data-action-type='Create') Create New
+
+  table.table.table-striped.table-bordered.table-hover
+    thead
+      tr
+        th Id
+        th Name
+        th Actions
+    tbody
+      if data.length == 0
         tr
-          th Id
-          th Name
-          th Actions
-      tbody
-        if data.length == 0
-          tr
-            td(colspan='3') No blogs available
-        each item in data
-          tr
-            td #{item.id}
-            td #{item.name}
-            td No Actions
+          td(colspan='3') No blogs available
+      each item in data
+        tr
+          td #{item.id}
+          td #{item.name}
+          td
+             a.btn.btn-danger.action-button
+               i.icon-white.icon-trash
+               | Delete               
+
+block customscripts
+  script(type='text/javascript', src='javascripts/jquery.alertmessage.js')
+
+  script(type='text/javascript')
+
+    $(function() {
+        $(".container").on("click", "a.action-button", function(e) {
+            e.preventDefault();
+
+            $("#alert-messages").alertMessage({
+               fade: true,
+               autoClose: true,
+               alertType: 'alert-success',
+               message: 'A button was clicked'
+            });
+        });
+    });
