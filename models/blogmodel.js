@@ -5,4 +5,4 @@ var mongoose = require('mongoose')
       name: { type: String, required: true }
  });
 
- module.exports = mongoose.model('BlogModel', BlogSchema);
+ module.exports = mongoose.model('Blog', BlogSchema);

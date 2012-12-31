@@ -30,9 +30,13 @@ var Blog = require('./routes/blog');
 var blog = new Blog('mongodb://dbuser:KLQcvn8F@ds047057.mongolab.com:47057/blogs');
 app.get('/', blog.index.bind(blog));
 app.post('/blog/add', blog.addBlog.bind(blog));
+app.post('/blog/update', blog.updateBlog.bind(blog));
 app.post('/blog/delete/:id', blog.deleteBlog.bind(blog));
 app.get("/sample", routes.index);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
+
+  console.log("Defined Routes:");
+  console.log(app.routes);
 });
