@@ -2,12 +2,15 @@
 
 h1= title
 
-table
+table.table.table-condensed
   thead
     tr
       td Id
       td Name
   tbody
+    if data.length == 0
+      tr
+         td(colspan='2') No blogs available
     each item in data
       tr
         td #{item.id}
