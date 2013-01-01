@@ -62,6 +62,13 @@ block customscripts
   script(type='text/javascript')
 
     $(function() {
+
+        $.ajaxSetup({
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8"
+        });
+
         $(".container").on("click", "a.action-button", function(e) {
             e.preventDefault();
 
@@ -103,7 +110,28 @@ block customscripts
            var $modelDialog = $(this).parent().parent();
            var id = $modelDialog.data("id");
            var url = $modelDialog.data("url");
-           
+           var blog = JSON.stringify({
+              id: id,
+              name: $("#blogname").val()
+           });
+
+           $.ajax(url, { type: "POST", data: blog }).success(function(data) {
+              $("#alert-messages").alertMessage({
+                 fade: true,
+                 autoClose: true,
+                 alertType: 'alert-success',
+                 message: data.message
+              });
+
+           }).error(function(error) {
+              $("#alert-messages").alertMessage({
+                 fade: true,
+                 autoClose: true,
+                 alertType: 'alert-error',
+                 message: "A server error occured"
+              }); 
+           });
+
            $modelDialog.modal("hide");           
         });
     });
