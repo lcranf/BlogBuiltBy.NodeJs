@@ -41,7 +41,7 @@ block content
                  span.caret
                ul.dropdown-menu
                  li
-                   a.action-button(data-action-type='Delete', data-action-url='/blog/delete/#{item.id}', data-blog-name='#{item.name}')
+                   a.action-button(data-action-type='Delete', data-action-url='/blog/delete/#{item.id}', data-blog-name='#{item.name}', data-blog-id='#{item.id}')
                      i.icon-trash
                      |  Delete
                   li
@@ -75,6 +75,10 @@ block customscripts
                    .addClass(getActionButton(actionType))
                    .text(actionType);
 
+            $("#blog-action-modal")
+                .data("url", $(this).data("action-url"))
+                .data("id", $(this).data("blog-id") || -1);
+
             if(actionType == 'Delete') {
               $("#blog-modify").hide();
               $("#delete-blog-message").show().text("Are you sure you want to delete '" + $(this).data("blog-name") + "'?");
@@ -82,17 +86,25 @@ block customscripts
               $("#delete-blog-message").hide();
               $("#blog-modify").show();
 
-              if(actionType == 'Edit') {
+              if(actionType == 'Edit') {                 
                  $("#blogname").val($(this).data("blog-name"));
               } else {
                  $("#blogname").val('');
               }
-            }
-            
+            }            
 
             $("#blog-action-modal-header").text(actionType + " Blog");
             $("#blog-action-modal").modal("show");
             
+        });
+
+        $("#blog-action-modal").on("click", "#action-confirmed", function(e) {
+
+           var $modelDialog = $(this).parent().parent();
+           var id = $modelDialog.data("id");
+           var url = $modelDialog.data("url");
+           
+           $modelDialog.modal("hide");           
         });
     });
 
