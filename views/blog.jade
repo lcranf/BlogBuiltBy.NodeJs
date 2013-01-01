@@ -9,16 +9,17 @@ block content
   #blog-action-modal.modal.hide.fade(tab-index='-1', role='dialog')
     .modal-header
       button.close(data-dismiss='modal', aira-hidden='true') x
-      h3 Create
+      h3#blog-action-modal-header Create
     .modal-body
-      p
+      p#blog-modify
         input#blogname(type='text')
+      p#delete-blog-message
     .modal-footer
       button.btn(data-dismiss='modal') Close
-      button.btn.btn-danger Delete
+      button#action-confirmed Delete
 
   p
-    a.btn.btn-primary.action-button(data-action-type='Create') Create New
+    a.btn.btn-primary.action-button(data-action-type='Create', data-action-url='/blog/add') Create New
 
   table.table.table-striped.table-bordered.table-hover
     thead
@@ -31,16 +32,29 @@ block content
         tr
           td(colspan='3') No blogs available
       each item in data
-        tr
+        tr(id='blog-id-#{item.id}')
           td #{item.id}
           td #{item.name}
           td
-             a.btn.btn-danger.action-button
-               i.icon-white.icon-trash
-               | Delete               
+             .btn-group
+               a.btn.btn-inverse.dropdown-toggle(data-toggle='dropdown', href='#') Actions 
+                 span.caret
+               ul.dropdown-menu
+                 li
+                   a.action-button(data-action-type='Delete', data-action-url='/blog/delete/#{item.id}', data-blog-name='#{item.name}')
+                     i.icon-trash
+                     |  Delete
+                  li
+                   a.action-button(data-action-type='Edit', data-action-url='/blog/update', data-blog-id='#{item.id}', data-blog-name='#{item.name}')
+                     i.icon-pencil
+                     |  Edit
+                  li
+                   a
+                     i.icon-eye-open
+                     |  View Posts
 
   p
-    a.btn.btn-primary.action-button(data-action-type='Create') Create New
+    a.btn.btn-primary.action-button(data-action-type='Create', data-action-url='/blog/add') Create New
 
 block customscripts
   script(type='text/javascript', src='javascripts/jquery.alertmessage.js')
@@ -51,7 +65,48 @@ block customscripts
         $(".container").on("click", "a.action-button", function(e) {
             e.preventDefault();
 
+            var actionType = $(this).data("action-type");
+            var actionUrl = $(this).data("action-url");            
+
+            var $button = $("#action-confirmed");
+
+            $button.removeClass()
+                   .addClass("btn")
+                   .addClass(getActionButton(actionType))
+                   .text(actionType);
+
+            if(actionType == 'Delete') {
+              $("#blog-modify").hide();
+              $("#delete-blog-message").show().text("Are you sure you want to delete '" + $(this).data("blog-name") + "'?");
+            } else {
+              $("#delete-blog-message").hide();
+              $("#blog-modify").show();
+
+              if(actionType == 'Edit') {
+                 $("#blogname").val($(this).data("blog-name"));
+              } else {
+                 $("#blogname").val('');
+              }
+            }
+            
+
+            $("#blog-action-modal-header").text(actionType + " Blog");
             $("#blog-action-modal").modal("show");
             
         });
     });
+
+    function getActionButton(action) {
+
+       switch (action) {
+         case 'Delete':
+           return 'btn-danger';
+           break;
+         case 'Create':
+           return 'btn-primary';
+           break;
+         case 'Edit':
+           return 'btn-success';
+           break;
+       }
+    }
