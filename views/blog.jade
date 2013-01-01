@@ -21,7 +21,7 @@ block content
   p
     a.btn.btn-primary.action-button(data-action-type='Create', data-action-url='/blog/add') Create New
 
-  table.table.table-striped.table-bordered.table-hover
+  table#blog-table.table.table-striped.table-bordered.table-hover
     thead
       tr
         th Id
@@ -57,11 +57,12 @@ block content
     a.btn.btn-primary.action-button(data-action-type='Create', data-action-url='/blog/add') Create New
 
 block customscripts
+  script(type='text/javascript', src='javascripts/jsrender.js')
   script(type='text/javascript', src='javascripts/jquery.alertmessage.js')
 
   script(type='text/javascript')
 
-    $(function() {
+    $(function() {       
 
         $.ajaxSetup({
                 type: "POST",
@@ -83,6 +84,7 @@ block customscripts
                    .text(actionType);
 
             $("#blog-action-modal")
+                .data("action", actionType)
                 .data("url", $(this).data("action-url"))
                 .data("id", $(this).data("blog-id") || -1);
 
@@ -108,8 +110,10 @@ block customscripts
         $("#blog-action-modal").on("click", "#action-confirmed", function(e) {
 
            var $modelDialog = $(this).parent().parent();
-           var id = $modelDialog.data("id");
-           var url = $modelDialog.data("url");
+           var id     = $modelDialog.data("id"),
+               action = $modelDialog.data("action"),
+               url    = $modelDialog.data("url");
+
            var blog = JSON.stringify({
               id: id,
               name: $("#blogname").val()
@@ -122,6 +126,8 @@ block customscripts
                  alertType: 'alert-success',
                  message: data.message
               });
+
+              processData(data.blog, action);
 
            }).error(function(error) {
               $("#alert-messages").alertMessage({
@@ -150,3 +156,53 @@ block customscripts
            break;
        }
     }
+
+    function processData(blog, action) {
+       switch (action) {
+         case 'Delete':
+           $("#blog-id-" + blog.id).remove();
+           break;
+         case 'Create':
+           var newRow = $("#blog-template").render(blog);
+
+           $("#blog-table > tbody").append(newRow);
+
+           //pulsate new row
+           //$("#blog-id-" + blog.id).pulsate({ times: 3 });
+           break;
+         case 'Edit':
+           
+           var updatedRow = $("#blog-template").render(blog);
+
+           $("#blog-id-" + blog.id).replaceWith(updatedRow);
+           break;
+       }  
+    }
+
+  script(id='blog-template', type='text/x-jsrender')
+    <tr id="blog-id-{{>id}}">
+    <td>{{>id}}</td>
+    <td>{{>name}}</td>
+    <td>
+    <div class="btn-group">
+    <a data-toggle="dropdown" href="#" class="btn btn-inverse dropdown-toggle">Actions 
+    <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+    <li>
+    <a data-action-type="Delete" data-action-url="/blog/delete/{{>id}}" data-blog-name="{{>name}}" data-blog-id="{{>id}}" class="action-button">
+    <i class="icon-trash"></i> Delete
+    </a>
+    </li>
+    <li>
+    <a data-action-type="Edit" data-action-url="/blog/update" data-blog-id="{{>id}}" data-blog-name="{{>name}}" class="action-button">
+    <i class="icon-pencil"></i> Edit
+    </a>
+    </li>
+    <li>
+    <a><i class="icon-eye-open"></i> View Posts</a>
+    </li>
+    </ul>
+    </div>
+    </td>
+    </tr>

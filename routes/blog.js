@@ -28,8 +28,12 @@ Blog.prototype = {
 		newBlog.save(function(err) {
 			if(err) 
 				throw err;
-			res.json({ isvalid: true, message: "blog is saved with id of " + newBlog._id });
-		});		
+			res.json({
+			            isvalid: true,
+			            message: "'" + newBlog.name + "' was successfully saved.",
+			            blog: { id: newBlog.id, name: newBlog.name }
+			          });
+		});
 	},
 
 	updateBlog: function(req, res) {
@@ -43,7 +47,11 @@ Blog.prototype = {
         	if(err)
         		throw err;
 
-        	res.json({ isvalid: true, message: "blog updated with id of " + item.id });
+        	res.json({
+        	            isvalid: true,
+        	            message: "blog updated with id of " + item.id,
+        	            blog: { id: updatedBlog.id, name: updatedBlog.name }
+        	         });
 
         });
 	},
@@ -55,7 +63,7 @@ Blog.prototype = {
             if(err)
             	throw err;
 
-            res.json({ isvalid: true, message: "blog deleted with id of " + item.id });
+            res.json({ isvalid: true, message: "Blog was successfully deleted with id of " + item.id, blog: { id: id } });
 		});		
 	}
 }
