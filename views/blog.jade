@@ -6,6 +6,17 @@ block content
 
   #alert-messages
 
+  #blog-action-modal.modal.hide.fade(tab-index='-1', role='dialog')
+    .modal-header
+      button.close(data-dismiss='modal', aira-hidden='true') x
+      h3 Create
+    .modal-body
+      p
+        input#blogname(type='text')
+    .modal-footer
+      button.btn(data-dismiss='modal') Close
+      button.btn.btn-danger Delete
+
   p
     a.btn.btn-primary.action-button(data-action-type='Create') Create New
 
@@ -28,6 +39,9 @@ block content
                i.icon-white.icon-trash
                | Delete               
 
+  p
+    a.btn.btn-primary.action-button(data-action-type='Create') Create New
+
 block customscripts
   script(type='text/javascript', src='javascripts/jquery.alertmessage.js')
 
@@ -37,11 +51,7 @@ block customscripts
         $(".container").on("click", "a.action-button", function(e) {
             e.preventDefault();
 
-            $("#alert-messages").alertMessage({
-               fade: true,
-               autoClose: true,
-               alertType: 'alert-success',
-               message: 'A button was clicked'
-            });
+            $("#blog-action-modal").modal("show");
+            
         });
     });
