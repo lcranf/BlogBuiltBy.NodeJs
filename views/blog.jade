@@ -168,13 +168,14 @@ block customscripts
            $("#blog-table > tbody").append(newRow);
 
            //pulsate new row
-           //$("#blog-id-" + blog.id).pulsate({ times: 3 });
+           $("#blog-id-" + blog.id).effect("pulsate", { times: 3 }, 1000);
            break;
          case 'Edit':
            
            var updatedRow = $("#blog-template").render(blog);
 
            $("#blog-id-" + blog.id).replaceWith(updatedRow);
+           $("#blog-id-" + blog.id).effect("pulsate", { times: 2 }, 500);
            break;
        }  
     }

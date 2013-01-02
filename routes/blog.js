@@ -49,7 +49,7 @@ Blog.prototype = {
 
         	res.json({
         	            isvalid: true,
-        	            message: "blog updated with id of " + item.id,
+        	            message: "'" + updatedBlog.name + "' was successfully updated.",
         	            blog: { id: updatedBlog.id, name: updatedBlog.name }
         	         });
 
